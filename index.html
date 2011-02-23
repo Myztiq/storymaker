@@ -48,24 +48,18 @@
 				}
 			];
 			var x,y;
+			
 			redraw();
 			$('canvas').mousedown(function(ev){
 				mouse.down = true;
-				// Get the mouse position relative to the canvas element.
-				if (ev.layerX || ev.layerX == 0) { // Firefox
-					x = ev.layerX;
-					y = ev.layerY;
-				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
-					x = ev.offsetX;
-					y = ev.offsetY;
-				}
+				updateStatus(ev);
 				for(i=0;i<figures.length;i++){
-					if(x>figures[i].x && x<figures[i].x+figures[i].width && y>figures[i].y && y<figures[i].y+figures[i].height){
-						figures[i].selected=true;
-					}
+					//If current location is in between the current location and the current location + width/height
+					isOnX = mouse.currentLocation.x>figures[i].x && mouse.currentLocation.x<figures[i].x+figures[i].width;
+					isOnY = mouse.currentLocation.y>figures[i].y && mouse.currentLocation.y<figures[i].y+figures[i].height;
+					//If both x and y it is selected
+					figures[i].selected=(isOnX && isOnY);
 				}
-				mouse.previousLocation.x = x;
-				mouse.previousLocation.y = y;
 			});
 			$('canvas').mouseup(function(evt){
 				for(i=0;i<figures.length;i++){
@@ -74,16 +68,7 @@
 				mouse.down = false;
 			});
 			$('canvas').mousemove(function(ev){
-				// Get the mouse position relative to the canvas element.
-				if (ev.layerX || ev.layerX == 0) { // Firefox
-					x = ev.layerX;
-					y = ev.layerY;
-				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
-					x = ev.offsetX;
-					y = ev.offsetY;
-				}
-				mouse.currentLocation.x = x;
-				mouse.currentLocation.y = y;
+				updateStatus(ev);
 				if(mouse.down){
 					for(i=0;i<figures.length;i++){
 						if(figures[i].selected){
@@ -101,6 +86,18 @@
 				for(i=0;i<figures.length;i++){
 					ctx.drawImage(figures[i].figure,figures[i].x,figures[i].y,figures[i].width,figures[i].height);
 				}
+			}
+			function updateStatus(ev){
+				// Get the mouse position relative to the canvas element.
+				if (ev.layerX || ev.layerX == 0) { // Firefox
+					x = ev.layerX;
+					y = ev.layerY;
+				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+					x = ev.offsetX;
+					y = ev.offsetY;
+				}
+				mouse.currentLocation.x = x;
+				mouse.currentLocation.y = y;
 			}
 		}
 
