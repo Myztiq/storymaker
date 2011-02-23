@@ -15,21 +15,22 @@
 		}
 	</style>
 	<script type="text/javascript">
+		var fillText = "";
+		var mouse = {
+			down: false,
+			previousLocation:{
+				x:0,
+				y:0
+			},
+			currentLocation:{
+				x:0,
+				y:0
+			}
+		};
+		var figures = "";
+		var canvas,ctx = "";
 		var init = function(){
-			var mouse = {
-				down: false,
-				previousLocation:{
-					x:0,
-					y:0
-				},
-				currentLocation:{
-					x:0,
-					y:0
-				}
-			};
-			var canvas = $('canvas')[0];
-			var ctx = canvas.getContext("2d");
-			var figures = [
+			figures = [
 				{
 					x:0,
 					y:0,
@@ -49,9 +50,12 @@
 					message: "O Hai!"
 				}
 			];
+			canvas = $('canvas')[0];
+			ctx = canvas.getContext("2d");
 			var x,y;
-			
 			redraw();
+
+			//Events
 			$('canvas').mousedown(function(ev){
 				mouse.down = true;
 				updateStatus(ev);
@@ -84,41 +88,65 @@
 				mouse.previousLocation.x = mouse.currentLocation.x;
 				mouse.previousLocation.y = mouse.currentLocation.y;
 			});
-			function redraw(){
-				canvas.width = canvas.width;
-				for(i=0;i<figures.length;i++){
-					//Draws a border around the picture.
+			jQuery(".resources img").click(function(item){
+				objItem = {
+					x:0,
+					y:0,
+					height: item.target.height,
+					width: item.target.width,
+					figure: item.target,
+					selected: false
+				};
+				figures.push(objItem);
+				redraw();
+			});
+		}
+		function redraw(){
+			canvas.width = canvas.width;
+			for(i=0;i<figures.length;i++){
+				//Draws a border around the picture.
 //					ctx.fillStyle = "#000";
 //					ctx.fillRect(figures[i].x-5, figures[i].y-5, figures[i].width+10, figures[i].height+10);
 //					ctx.fillStyle = "#FFF";
 //					ctx.fillRect(figures[i].x, figures[i].y, figures[i].width, figures[i].height);
-					ctx.drawImage(figures[i].figure,figures[i].x,figures[i].y,figures[i].width,figures[i].height);
-					ctx.font = "bold 12px sans-serif";
-					ctx.fillStyle = "#000";
-					ctx.fillText(figures[i].message, figures[i].x-10+figures[i].width/2,figures[i].y);
-				}
+				ctx.drawImage(figures[i].figure,figures[i].x,figures[i].y,figures[i].width,figures[i].height);
+//				ctx.font = "bold 12px sans-serif";
+//				ctx.fillStyle = "#000";
+//				ctx.fillText(figures[i].message, figures[i].x-10+figures[i].width/2,figures[i].y);
 			}
-			function updateStatus(ev){
-				// Get the mouse position relative to the canvas element.
-				if (ev.layerX || ev.layerX == 0) { // Firefox
-					x = ev.layerX;
-					y = ev.layerY;
-				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
-					x = ev.offsetX;
-					y = ev.offsetY;
-				}
-				mouse.currentLocation.x = x;
-				mouse.currentLocation.y = y;
+			ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+			ctx.fillRect(0, canvas.height-50, canvas.width, 50);
+			ctx.font = "bold 12px sans-serif";
+			ctx.fillStyle = "#000";
+			ctx.fillText(fillText,5,canvas.height-30);
+		}
+		function updateStatus(ev){
+			// Get the mouse position relative to the canvas element.
+			if (ev.layerX || ev.layerX == 0) { // Firefox
+				x = ev.layerX;
+				y = ev.layerY;
+			} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+				x = ev.offsetX;
+				y = ev.offsetY;
 			}
+			mouse.currentLocation.x = x;
+			mouse.currentLocation.y = y;
+		}
+		function updateText(){
+			fillText = jQuery("textarea").val();
+			redraw();
 		}
 	</script>
 </head>
 <body onload="init()">
 <canvas id="canvas" width="1024" height="500"></canvas>
-<div style="display:none">
+<br/>
+<textarea rows="5" cols="100" onkeyup="updateText()" >
+</textarea>
+<div class="resources">
 	<!--Preloading!-->
-	<img src="resources/images/stick_figure.gif" id="maleStick">
-	<img src="resources/images/female_stick.png" id="femaleStick">
+	<img src="resources/images/stick_figure.gif" id="maleStick" height="100" width="100">
+	<img src="resources/images/female_stick.png" id="femaleStick" height="100" width="100">
 </div>
 </body>
 </html>
