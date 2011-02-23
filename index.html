@@ -36,7 +36,8 @@
 					height: 100,
 					width: 100,
 					figure: jQuery('#maleStick')[0],
-					selected: false
+					selected: false,
+					message: "Hello!"
 				},
 				{
 					x:50,
@@ -44,7 +45,8 @@
 					height: 120,
 					width: 120,
 					figure: jQuery('#femaleStick')[0],
-					selected: false
+					selected: false,
+					message: "O Hai!"
 				}
 			];
 			var x,y;
@@ -72,6 +74,7 @@
 				if(mouse.down){
 					for(i=0;i<figures.length;i++){
 						if(figures[i].selected){
+							// Handle moving the current object based upon its change in position when the user is moving the mouse
 							figures[i].x += mouse.currentLocation.x-mouse.previousLocation.x;
 							figures[i].y += mouse.currentLocation.y-mouse.previousLocation.y;
 						}
@@ -84,7 +87,15 @@
 			function redraw(){
 				canvas.width = canvas.width;
 				for(i=0;i<figures.length;i++){
+					//Draws a border around the picture.
+//					ctx.fillStyle = "#000";
+//					ctx.fillRect(figures[i].x-5, figures[i].y-5, figures[i].width+10, figures[i].height+10);
+//					ctx.fillStyle = "#FFF";
+//					ctx.fillRect(figures[i].x, figures[i].y, figures[i].width, figures[i].height);
 					ctx.drawImage(figures[i].figure,figures[i].x,figures[i].y,figures[i].width,figures[i].height);
+					ctx.font = "bold 12px sans-serif";
+					ctx.fillStyle = "#000";
+					ctx.fillText(figures[i].message, figures[i].x-10+figures[i].width/2,figures[i].y);
 				}
 			}
 			function updateStatus(ev){
@@ -100,9 +111,6 @@
 				mouse.currentLocation.y = y;
 			}
 		}
-
-
-
 	</script>
 </head>
 <body onload="init()">
