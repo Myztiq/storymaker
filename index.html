@@ -29,10 +29,24 @@
 			};
 			var canvas = $('canvas')[0];
 			var ctx = canvas.getContext("2d");
-			var figureLocation = {
-				x:0,
-				y:0
-			}
+			var figures = [
+				{
+					x:0,
+					y:0,
+					height: 100,
+					width: 100,
+					figure: jQuery('#maleStick')[0],
+					selected: false
+				},
+				{
+					x:50,
+					y:50,
+					height: 120,
+					width: 120,
+					figure: jQuery('#femaleStick')[0],
+					selected: false
+				}
+			];
 			var x,y;
 			redraw();
 			$('canvas').mousedown(function(ev){
@@ -45,10 +59,18 @@
 					x = ev.offsetX;
 					y = ev.offsetY;
 				}
+				for(i=0;i<figures.length;i++){
+					if(x>figures[i].x && x<figures[i].x+figures[i].width && y>figures[i].y && y<figures[i].y+figures[i].height){
+						figures[i].selected=true;
+					}
+				}
 				mouse.previousLocation.x = x;
 				mouse.previousLocation.y = y;
 			});
 			$('canvas').mouseup(function(evt){
+				for(i=0;i<figures.length;i++){
+					figures[i].selected = false;
+				}
 				mouse.down = false;
 			});
 			$('canvas').mousemove(function(ev){
@@ -63,8 +85,12 @@
 				mouse.currentLocation.x = x;
 				mouse.currentLocation.y = y;
 				if(mouse.down){
-					figureLocation.x += mouse.currentLocation.x-mouse.previousLocation.x;
-					figureLocation.y += mouse.currentLocation.y-mouse.previousLocation.y;
+					for(i=0;i<figures.length;i++){
+						if(figures[i].selected){
+							figures[i].x += mouse.currentLocation.x-mouse.previousLocation.x;
+							figures[i].y += mouse.currentLocation.y-mouse.previousLocation.y;
+						}
+					}
 					redraw();
 				}
 				mouse.previousLocation.x = mouse.currentLocation.x;
@@ -72,7 +98,9 @@
 			});
 			function redraw(){
 				canvas.width = canvas.width;
-				ctx.drawImage(stickFigure,figureLocation.x,figureLocation.y,100,100);
+				for(i=0;i<figures.length;i++){
+					ctx.drawImage(figures[i].figure,figures[i].x,figures[i].y,figures[i].width,figures[i].height);
+				}
 			}
 		}
 
@@ -81,10 +109,11 @@
 	</script>
 </head>
 <body onload="init()">
-<canvas id="canvas"></canvas>
+<canvas id="canvas" width="1024" height="500"></canvas>
 <div style="display:none">
 	<!--Preloading!-->
-	<img src="resources/images/stick_figure.gif" id="stickFigure">
+	<img src="resources/images/stick_figure.gif" id="maleStick">
+	<img src="resources/images/female_stick.png" id="femaleStick">
 </div>
 </body>
 </html>
