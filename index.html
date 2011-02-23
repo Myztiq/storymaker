@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<style type="text/css">
+		#canvas{
+			height:500px;
+			width:1024px;
+			border:10px solid black;
+			position: relative;
+		}
+		body{
+			margin:0;
+			padding:0;
+		}
+	</style>
+	<script type="text/javascript">
+		var init = function(){
+			var mouse = {
+				down: false,
+				previousLocation:{
+					x:0,
+					y:0
+				},
+				currentLocation:{
+					x:0,
+					y:0
+				}
+			};
+			var canvas = $('canvas')[0];
+			var ctx = canvas.getContext("2d");
+			var figureLocation = {
+				x:0,
+				y:0
+			}
+			var x,y;
+			redraw();
+			$('canvas').mousedown(function(ev){
+				mouse.down = true;
+				// Get the mouse position relative to the canvas element.
+				if (ev.layerX || ev.layerX == 0) { // Firefox
+					x = ev.layerX;
+					y = ev.layerY;
+				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+					x = ev.offsetX;
+					y = ev.offsetY;
+				}
+				mouse.previousLocation.x = x;
+				mouse.previousLocation.y = y;
+			});
+			$('canvas').mouseup(function(evt){
+				mouse.down = false;
+			});
+			$('canvas').mousemove(function(ev){
+				// Get the mouse position relative to the canvas element.
+				if (ev.layerX || ev.layerX == 0) { // Firefox
+					x = ev.layerX;
+					y = ev.layerY;
+				} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+					x = ev.offsetX;
+					y = ev.offsetY;
+				}
+				mouse.currentLocation.x = x;
+				mouse.currentLocation.y = y;
+				if(mouse.down){
+					figureLocation.x += mouse.currentLocation.x-mouse.previousLocation.x;
+					figureLocation.y += mouse.currentLocation.y-mouse.previousLocation.y;
+					redraw();
+				}
+				mouse.previousLocation.x = mouse.currentLocation.x;
+				mouse.previousLocation.y = mouse.currentLocation.y;
+			});
+			function redraw(){
+				canvas.width = canvas.width;
+				ctx.drawImage(stickFigure,figureLocation.x,figureLocation.y,100,100);
+			}
+		}
+
+
+
+	</script>
+</head>
+<body onload="init()">
+<canvas id="canvas"></canvas>
+<div style="display:none">
+	<!--Preloading!-->
+	<img src="resources/images/stick_figure.gif" id="stickFigure">
+</div>
+</body>
+</html>
